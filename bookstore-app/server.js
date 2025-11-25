@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -22,7 +23,7 @@ db.sequelize.sync()
     .catch((err) => {
         console.log("Failed to sync db: " + err.message);
     });
-require("dotenv").config();
+
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
