@@ -1,17 +1,17 @@
 version: '3.8'
 services:
   postgresdb:
-  image: postgres
-  restart: unless-stopped
-  env_file: ./.env
-  environment:
-    - POSTGRES_USER=$POSTGRESDB_USER
-    - POSTGRES_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
-    - POSTGRES_DB=$POSTGRESDB_DATABASE
-  ports:
-    - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
-  volumes:
-    - db:/var/lib/postgres
+    image: postgres
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=$POSTGRESDB_USER
+      - POSTGRES_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
+      - POSTGRES_DB=$POSTGRESDB_DATABASE
+    ports:
+      - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
+    volumes:
+      - db:/var/lib/postgres
   app:
     depends_on:
       - postgresdb
@@ -28,6 +28,5 @@ services:
       - DB_PORT=$POSTGRESDB_DOCKER_PORT
     stdin_open: true
     tty: true
-
 volumes:
   db:
