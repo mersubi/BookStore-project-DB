@@ -24,6 +24,7 @@ db.sequelize.sync()
         console.log("Failed to sync db: " + err.message);
     });
 
+
 require("./app/routes/goodsgroup.routes")(app);
 require("./app/routes/product.routes")(app);
 require("./app/routes/pricelist.routes")(app);
