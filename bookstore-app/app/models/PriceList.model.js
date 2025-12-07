@@ -2,7 +2,9 @@ module.exports = (sequelize, Sequelize) => {
     const PriceList = sequelize.define("pricelist", {
         id_price_list: {
             type: Sequelize.INTEGER,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true,
+            allowNull: false
         },
         effective_date: {
             type: Sequelize.DATE,

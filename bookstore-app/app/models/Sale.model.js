@@ -2,7 +2,9 @@ module.exports = (sequelize, Sequelize) => {
     const Sale = sequelize.define("sale", {
         id_sale: {
             type: Sequelize.INTEGER,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true,
+            allowNull: false
         },
         id_price_list: {
             type: Sequelize.INTEGER,

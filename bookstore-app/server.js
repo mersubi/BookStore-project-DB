@@ -24,6 +24,12 @@ db.sequelize.sync()
         console.log("Failed to sync db: " + err.message);
     });
 
+require("./app/routes/goodsgroup.routes")(app);
+require("./app/routes/product.routes")(app);
+require("./app/routes/pricelist.routes")(app);
+require("./app/routes/pricelistitem.routes")(app);
+require("./app/routes/sale.routes")(app);
+require("./app/routes/saleitem.routes")(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
