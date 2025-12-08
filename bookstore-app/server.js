@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to bookstore-app application." });
 });
 const db = require("./app/models");
-db.sequelize.sync()
+db.sequelize.sync() //{ force: true }
     .then(() => {
         console.log("Synced db.");
     })

@@ -7,7 +7,8 @@ module.exports = (db) => {
 
     // Product -> GoodsGroup
     db.product.belongsTo(db.goodsGroup, {
-        foreignKey: 'id_category'
+        foreignKey: 'id_category',
+        as: 'category'
     });
 
     // PriceListItem -> PriceList

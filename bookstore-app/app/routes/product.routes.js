@@ -9,5 +9,15 @@ module.exports = app => {
     router.delete("/:id", product.delete);
     router.delete("/", product.deleteAll);
 
+    // Получить название категории товара по ID товара
+    router.get("/:id/goodsgroupname", product.getGoodsGroupName);
+
+    // Получить всю информацию о категории товара по ID товара
+    router.get("/:id/goodsgroup", product.getGoodsGroup);
+
+    router.get("/stats/with-prices", product.getGoodsWithCurrentPrices);
+    router.get("/stats/top-selling", product.getTopSellingGoods);
+    router.get("/stats/never-sold", product.getGoodsNeverSold);
+
     app.use('/api/products', router);
 };

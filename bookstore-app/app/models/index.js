@@ -6,6 +6,11 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     dialect: dbConfig.dialect,
     port: dbConfig.port,
     operatorsAliases: false,
+
+    define: {
+        underscored: true,  // snake_case вместо camelCase
+    },
+
     pool: {
         max: dbConfig.pool.max,
         min: dbConfig.pool.min,
