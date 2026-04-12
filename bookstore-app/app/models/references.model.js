@@ -35,4 +35,12 @@ module.exports = (db) => {
     db.saleItem.belongsTo(db.product, {
         foreignKey: 'id_product'
     });
+
+    // Связь Товара с Поставщиком
+    db.suppliers.hasMany(db.product, { foreignKey: 'supplierId' });
+    db.product.belongsTo(db.suppliers, { foreignKey: 'supplierId' });
+
+    // Связь Товара с Акцией
+    db.promotions.hasMany(db.product, { foreignKey: 'promotionId' });
+    db.product.belongsTo(db.promotions, { foreignKey: 'promotionId' });
 };

@@ -36,6 +36,12 @@ module.exports = (sequelize, Sequelize) => {
         description: {
             type: Sequelize.STRING(256),
             allowNull: true
+        },
+        supplierId: {
+            type: Sequelize.INTEGER
+        },
+        promotionId: {
+            type: Sequelize.INTEGER
         }
     });
     return Product;
