@@ -73,15 +73,18 @@
                 </ul>
 
                 <div class="mt-auto pt-4 p-3 border-top border-secondary">
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center mb-3">
                         <div class="bg-primary rounded-circle p-2 me-2">
                             <i class="bi bi-person-fill text-white"></i>
                         </div>
                         <div>
-                            <div class="fw-bold small" id="currentUserLogin">Admin</div>
-                            <div class="text-muted smaller">Администратор</div>
+                            <div class="fw-bold small" id="currentUserDisplay">Не авторизован</div>
+                            <div class="text-muted smaller" id="currentUserRole">-</div>
                         </div>
                     </div>
+                    <button class="btn btn-sm btn-outline-danger w-100 d-none" id="logoutBtn">
+                        <i class="bi bi-box-arrow-right"></i> Выйти
+                    </button>
                 </div>
             </div>
 
@@ -598,6 +601,32 @@
                         </div>
                     </div>
                     <div class="modal-footer"><button type="submit" class="btn btn-primary w-100">Создать</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-card p-0 border-primary">
+                <form id="loginForm">
+                    <div class="modal-header border-secondary border-opacity-25">
+                        <h5 class="modal-title fw-bold">Вход в систему</h5>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Логин</label>
+                            <input type="text" class="form-control" name="login" placeholder="Введите логин..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Пароль</label>
+                            <input type="password" class="form-control" name="password" placeholder="Введите пароль..." required>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary border-opacity-25">
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">ВОЙТИ</button>
+                    </div>
                 </form>
             </div>
         </div>

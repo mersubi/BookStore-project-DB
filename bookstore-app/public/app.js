@@ -5,15 +5,38 @@
 let cart = [];
 let currentPrices = {};
 let currentPromotionDiscount = 0;
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
 
-console.log("System: POS Promotions v1.2 Activated");
+console.log("System: POS Auth v1.3 Activated");
+
+function checkAuth() {
+    if (!currentUser) {
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+        document.getElementById('currentUserDisplay').innerText = 'Не авторизован';
+        document.getElementById('currentUserRole').innerText = '-';
+        document.getElementById('logoutBtn').classList.add('d-none');
+    } else {
+        document.getElementById('currentUserDisplay').innerText = currentUser.login;
+        document.getElementById('currentUserRole').innerText = currentUser.role === 'admin' ? 'Администратор' : (currentUser.role === 'manager' ? 'Менеджер' : 'Кассир');
+        document.getElementById('logoutBtn').classList.remove('d-none');
+        
+        // Hide management screens for non-admins (simple RBAC)
+        if (currentUser.role !== 'admin' && currentUser.role !== 'manager') {
+            document.querySelectorAll('.nav-link[data-target="users-screen"], .nav-link[data-target="suppliers-screen"]').forEach(el => el.parentElement.classList.add('d-none'));
+        }
+    }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
+    checkAuth();
     initNavigation();
     initGlobalListeners();
     initFormHandlers();
-    loadDashboard();
-    loadDropdowns();
+    if (currentUser) {
+        loadDashboard();
+        loadDropdowns();
+    }
 });
 
 // --- UI Helpers ---
@@ -193,9 +216,16 @@ function initGlobalListeners() {
         updateCartTotal();
     });
 
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        localStorage.removeItem('currentUser');
+        location.reload();
+    });
+
     document.getElementById('checkoutBtn')?.addEventListener('click', async () => {
         const plId = document.getElementById('posPriceListSelect').value;
         if (!plId || cart.length === 0) { showToast('Выберите прайс и добавьте товары!', 'warning'); return; }
+        if (!currentUser) { showToast('Сначала авторизуйтесь!', 'danger'); return; }
+        
         const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         const grandTotal = subtotal * (1 - currentPromotionDiscount / 100);
         const saleData = {
@@ -203,7 +233,8 @@ function initGlobalListeners() {
             sale_date: new Date().toISOString().split('T')[0],
             payment_time: new Date().toLocaleTimeString('ru-RU', { hour12: false }),
             total_amount: grandTotal,
-            userId: 1, items: cart.map(item => ({ id_product: item.id_product, quantity: item.quantity, sale_price: item.price * (1 - currentPromotionDiscount / 100) }))
+            userId: currentUser.id, 
+            items: cart.map(item => ({ id_product: item.id_product, quantity: item.quantity, sale_price: item.price * (1 - currentPromotionDiscount / 100) }))
         };
         const res = await fetch('/api/sales', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(saleData) });
         if (res.ok) { showToast('Чек успешно пробит!', 'success'); cart = []; currentPromotionDiscount = 0; document.getElementById('posPromotionSelect').value = ''; renderCart(); loadPosProducts(); loadDashboard(); }
@@ -222,6 +253,32 @@ function initGlobalListeners() {
 }
 
 function initFormHandlers() {
+    // Login Form Handler
+    document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        try {
+            const res = await fetch('/api/users/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                const result = await res.json();
+                currentUser = result.user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showToast('Добро пожаловать, ' + currentUser.login, 'success');
+                closeModal('loginModal');
+                checkAuth();
+                loadDashboard();
+                loadDropdowns();
+            } else {
+                const err = await res.json();
+                showToast(err.message || 'Ошибка входа', 'danger');
+            }
+        } catch (err) { showToast('Ошибка сети', 'danger'); }
+    });
+
     const forms = [
         { id: 'addProductForm', url: '/api/products', modal: 'addProductModal', reload: loadProducts },
         { id: 'addCategoryForm', url: '/api/goodsgroups', modal: 'addCategoryModal', reload: loadCategories },
