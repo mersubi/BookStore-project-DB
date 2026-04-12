@@ -606,6 +606,66 @@
         </div>
     </div>
 
+    <!-- Модальное окно деталей чека -->
+    <div class="modal fade" id="saleDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-card p-0">
+                <div class="modal-header border-secondary border-opacity-25">
+                    <h5 class="modal-title fw-bold">Детали чека #<span id="detailSaleId">-</span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 d-flex justify-content-between small text-muted">
+                        <span id="detailSaleDate">-</span>
+                        <span id="detailSaleUser">-</span>
+                    </div>
+                    <table class="table table-sm table-borderless">
+                        <thead>
+                            <tr class="text-muted smaller border-bottom border-secondary border-opacity-10">
+                                <th>Товар</th>
+                                <th class="text-end">Кол-во</th>
+                                <th class="text-end">Цена</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailSaleItems"></tbody>
+                    </table>
+                    <div class="pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
+                        <span class="fw-bold">ИТОГО К ОПЛАТЕ:</span>
+                        <span class="fw-bold fs-4 text-primary"><span id="detailSaleTotal">0</span> ₽</span>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary border-opacity-25">
+                    <button class="btn btn-outline-info w-100" onclick="printReceipt()">
+                        <i class="bi bi-printer"></i> Распечатать чек
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрытая зона для печати (80мм стиль) -->
+    <div id="printableReceipt" class="d-none">
+        <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
+            <h3 style="margin: 0; font-family: monospace;">BOOKSTORE</h3>
+            <div style="font-size: 12px; font-family: monospace;">КАССОВЫЙ ЧЕК</div>
+        </div>
+        <div style="font-size: 11px; font-family: monospace; margin-bottom: 10px;">
+            <div>ЧЕК: #<span id="printId"></span></div>
+            <div>ДАТА: <span id="printDate"></span></div>
+            <div>ПОЛЬЗОВАТЕЛЬ: <span id="printUser"></span></div>
+        </div>
+        <table style="width: 100%; font-size: 11px; font-family: monospace; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
+            <tbody id="printItems"></tbody>
+        </table>
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-family: monospace; font-size: 14px;">
+            <span>ИТОГО:</span>
+            <span><span id="printTotal">0</span>.00 ₽</span>
+        </div>
+        <div style="text-align: center; margin-top: 20px; font-size: 10px; font-family: monospace;">
+            СПАСИБО ЗА ПОКУПКУ!
+        </div>
+    </div>
+
     <!-- Модальное окно авторизации -->
     <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

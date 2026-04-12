@@ -237,7 +237,18 @@ function initGlobalListeners() {
             items: cart.map(item => ({ id_product: item.id_product, quantity: item.quantity, sale_price: item.price * (1 - currentPromotionDiscount / 100) }))
         };
         const res = await fetch('/api/sales', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(saleData) });
-        if (res.ok) { showToast('Чек успешно пробит!', 'success'); cart = []; currentPromotionDiscount = 0; document.getElementById('posPromotionSelect').value = ''; renderCart(); loadPosProducts(); loadDashboard(); }
+            if (res.ok) {
+                showToast('Чек успешно пробит!', 'success');
+                const sale = await res.json();
+                cart = [];
+                currentPromotionDiscount = 0;
+                document.getElementById('posPromotionSelect').value = '';
+                renderCart();
+                loadPosProducts();
+                loadDashboard();
+                // Автоматически открываем чек после оплаты для печати
+                viewSaleDetails(sale.id_sale);
+            }
         else { const err = await res.json(); showToast('Ошибка: ' + err.message, 'danger'); }
     });
 
@@ -479,3 +490,43 @@ document.getElementById('addPriceListItemForm')?.addEventListener('submit', asyn
     if (res.ok) { e.target.reset(); document.getElementById('currentPriceListIdInput').value = data.id_price_list; openPriceList(data.id_price_list); showToast('Цена добавлена'); }
     else showToast('Ошибка', 'warning');
 });
+async function viewSaleDetails(id) {
+    try {
+        const res = await fetch(`/api/sales/${id}`);
+        if (!res.ok) throw new Error('Чек не найден');
+        const sale = await res.json();
+
+        // Fill Modal
+        document.getElementById('detailSaleId').innerText = sale.id_sale;
+        document.getElementById('detailSaleDate').innerText = new Date(sale.sale_date).toLocaleDateString();
+        document.getElementById('detailSaleUser').innerText = 'Кассир: ' + (sale.user ? sale.user.login : 'System');
+        document.getElementById('detailSaleTotal').innerText = sale.total_amount;
+
+        const tbody = document.getElementById('detailSaleItems');
+        tbody.innerHTML = '';
+        
+        // Fill Printable Receipt Area
+        document.getElementById('printId').innerText = sale.id_sale;
+        document.getElementById('printDate').innerText = new Date(sale.sale_date).toLocaleDateString() + ' ' + sale.payment_time;
+        document.getElementById('printUser').innerText = sale.user ? sale.user.login : 'System';
+        document.getElementById('printTotal').innerText = sale.total_amount;
+        const pBody = document.getElementById('printItems');
+        pBody.innerHTML = '';
+
+        const items = sale.saleItems || sale.items || [];
+        items.forEach(item => {
+            const name = item.product ? item.product.name : 'Товар #' + item.id_product;
+            // Modal Row
+            tbody.innerHTML += `<tr><td>${name}</td><td class="text-end">${item.quantity}</td><td class="text-end">${item.sale_price} ₽</td></tr>`;
+            // Print Row
+            pBody.innerHTML += `<tr><td>${name}</td><td style="text-align:right">${item.quantity} x ${item.sale_price}</td></tr>`;
+        });
+
+        new bootstrap.Modal(document.getElementById('saleDetailsModal')).show();
+    } catch (e) { showToast(e.message, 'danger'); }
+}
+window.viewSaleDetails = viewSaleDetails;
+
+window.printReceipt = function() {
+    window.print();
+};
