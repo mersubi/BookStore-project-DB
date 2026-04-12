@@ -17,7 +17,8 @@ exports.create = (req, res) => {
         publisher: req.body.publisher,
         isbn: req.body.isbn,
         id_category: req.body.id_category,
-        description: req.body.description
+        description: req.body.description,
+        stock_quantity: req.body.stock_quantity || 0
     };
 
     Product.create(product)

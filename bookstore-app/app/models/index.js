@@ -31,6 +31,7 @@ db.priceListItem = require('./PriceListItem.model.js')(sequelize, Sequelize);
 db.saleItem = require('./SaleItem.model.js')(sequelize, Sequelize);
 db.suppliers = require("./supplier.model.js")(sequelize, Sequelize);
 db.promotions = require("./promotion.model.js")(sequelize, Sequelize);
+db.users = require("./user.model.js")(sequelize, Sequelize);
 
 require("./references.model.js")(db)
 module.exports = db;

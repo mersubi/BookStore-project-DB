@@ -21,6 +21,9 @@ module.exports = (sequelize, Sequelize) => {
         total_amount: {
             type: Sequelize.DECIMAL(10, 2),
             allowNull: false
+        },
+        userId: {
+            type: Sequelize.INTEGER
         }
     });
     return Sale;

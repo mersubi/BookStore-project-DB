@@ -42,6 +42,10 @@ module.exports = (sequelize, Sequelize) => {
         },
         promotionId: {
             type: Sequelize.INTEGER
+        },
+        stock_quantity: {
+            type: Sequelize.INTEGER,
+            defaultValue: 0
         }
     });
     return Product;

@@ -2,26 +2,52 @@ const db = require("../models");
 const Sale = db.sale;
 const Op = db.Sequelize.Op;
 
-exports.create = (req, res) => {
-    if (!req.body.id_price_list || !req.body.sale_date || !req.body.total_amount) {
-        res.status(400).send({ message: "Обязательные поля: id_price_list, sale_date, total_amount!" });
-        return;
+exports.create = async (req, res) => {
+    if (!req.body.id_price_list || !req.body.sale_date || !req.body.total_amount || !req.body.items || !Array.isArray(req.body.items)) {
+        return res.status(400).send({ message: "Обязательные поля: id_price_list, sale_date, total_amount, items (массив)!" });
     }
 
-    const sale = {
-        id_price_list: req.body.id_price_list,
-        sale_date: req.body.sale_date,
-        payment_time: req.body.payment_time || new Date().toTimeString().split(' ')[0],
-        total_amount: req.body.total_amount
-    };
+    try {
+        await db.sequelize.transaction(async (t) => {
+            const saleParams = {
+                id_price_list: req.body.id_price_list,
+                sale_date: req.body.sale_date,
+                payment_time: req.body.payment_time || new Date().toTimeString().split(' ')[0],
+                total_amount: req.body.total_amount,
+                userId: req.body.userId || null
+            };
 
-    Sale.create(sale)
-        .then(data => res.send(data))
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Ошибка при создании продажи."
-            });
+            const newSale = await Sale.create(saleParams, { transaction: t });
+
+            for (const item of req.body.items) {
+                const product = await db.product.findByPk(item.id_product, { transaction: t });
+
+                if (!product) {
+                    throw new Error(`Товар с id=${item.id_product} не найден.`);
+                }
+
+                if (product.stock_quantity < item.quantity) {
+                    throw new Error(`Недостаточно товара на складе для: ${product.name}`);
+                }
+
+                product.stock_quantity -= item.quantity;
+                await product.save({ transaction: t });
+
+                await db.saleItem.create({
+                    id_sale: newSale.id_sale,
+                    id_product: item.id_product,
+                    quantity: item.quantity,
+                    sale_price: item.sale_price
+                }, { transaction: t });
+            }
+            
+            res.send(newSale);
         });
+    } catch (err) {
+        res.status(400).send({
+            message: err.message || "Ошибка при создании продажи."
+        });
+    }
 };
 
 exports.findAll = (req, res) => {
