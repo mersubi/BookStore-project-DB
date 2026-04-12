@@ -12,7 +12,7 @@ exports.create = (req, res) => {
     const goodsGroup = {
         name: req.body.name,
         description: req.body.description,
-        baseGoodsGroup: req.body.baseGoodsGroup || null
+        baseGoodsGroup: req.body.baseGoodsGroup || req.body.base_goods_group || null
     };
 
     GoodsGroup.create(goodsGroup)
@@ -26,10 +26,14 @@ exports.create = (req, res) => {
 
 // Получить все группы товаров (с поиском по имени)
 exports.findAll = (req, res) => {
+    console.log("DEBUG: goodsgroup.findAll called");
     const name = req.query.name;
     const condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
 
-    GoodsGroup.findAll({ where: condition })
+    GoodsGroup.findAll({ 
+        where: condition,
+        include: ['parent'] 
+    })
         .then(data => res.send(data))
         .catch(err => {
             res.status(500).send({
@@ -42,7 +46,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    GoodsGroup.findByPk(id)
+    GoodsGroup.findByPk(id, { include: ['parent'] })
         .then(data => {
             if (data) res.send(data);
             else res.status(404).send({ message: `Группа с id=${id} не найдена.` });

@@ -51,7 +51,7 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    Sale.findAll({ include: ["priceList"] })
+    Sale.findAll({ include: ["priceList", "user"] })
         .then(data => res.send(data))
         .catch(err => {
             res.status(500).send({
@@ -63,13 +63,22 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    Sale.findByPk(id, { include: ["priceList"] })
+    Sale.findByPk(id, {
+        include: [
+            "priceList",
+            "user",
+            {
+                model: db.saleItem,
+                include: ["product"]
+            }
+        ]
+    })
         .then(data => {
             if (data) res.send(data);
             else res.status(404).send({ message: `Продажа с id=${id} не найдена.` });
         })
         .catch(err => {
-            res.status(500).send({ message: `Ошибка при получении продажи с id=${id}` });
+            res.status(500).send({ message: `Ошибка при получении продажи с id=${id}: ` + err.message });
         });
 };
 

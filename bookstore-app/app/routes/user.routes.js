@@ -57,6 +57,8 @@ module.exports = app => {
      *         description: Ошибка сервера
      */
     router.get("/", users.findAll);
+    router.get("/:id", users.findOne);
+    router.put("/:id", users.update);
 
     /**
      * @swagger
@@ -79,6 +81,7 @@ module.exports = app => {
      *         description: Ошибка сервера
      */
     router.delete("/:id", users.delete);
+    router.post("/login", users.login);
 
     app.use('/api/users', router);
 };

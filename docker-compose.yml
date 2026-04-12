@@ -11,7 +11,7 @@ services:
     ports:
       - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
     volumes:
-      - db:/var/lib/postgres
+      - db:/var/lib/postgresql
   app:
     depends_on:
       - postgresdb
@@ -28,5 +28,8 @@ services:
       - DB_PORT=$POSTGRESDB_DOCKER_PORT
     stdin_open: true
     tty: true
+    volumes:
+      - ./bookstore-app:/bookstore-app
+      - /bookstore-app/node_modules
 volumes:
   db:

@@ -5,6 +5,9 @@ const cors = require("cors");
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const app = express();
+app.use(express.static('public'));
+app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
+
 var corsOptions = {
     origin: "http://localhost:8081"
 };

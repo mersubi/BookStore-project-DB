@@ -24,7 +24,8 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    PriceListItem.findAll({ include: ["priceList", "product"] })
+    const condition = req.query.id_price_list ? { id_price_list: req.query.id_price_list } : null;
+    PriceListItem.findAll({ where: condition, include: ["product"] })
         .then(data => res.send(data))
         .catch(err => {
             res.status(500).send({

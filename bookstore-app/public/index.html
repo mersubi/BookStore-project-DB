@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookStore - Premium</title>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <div id="toast-container"></div>
+
+    <div class="container-fluid p-0">
+        <div class="row g-0 min-vh-100">
+            <!-- Modern Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="d-flex align-items-center mb-4 px-3">
+                    <i class="bi bi-book-half fs-3 text-primary me-2"></i>
+                    <h5 class="mb-0 fw-bold">BookStore</h5>
+                </div>
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-target="dashboard-screen">
+                            <i class="bi bi-speedometer2"></i> Дашборд
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="pos-screen">
+                            <i class="bi bi-cart3"></i> Кассовый терминал
+                        </a>
+                    </li>
+                    <div class="text-muted small mt-4 mb-2 ps-3 fw-bold">УПРАВЛЕНИЕ</div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="catalog-screen">
+                            <i class="bi bi-grid"></i> Каталог товаров
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="categories-screen">
+                            <i class="bi bi-bookmarks"></i> Категории
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="pricelists-screen">
+                            <i class="bi bi-tags"></i> Менеджер цен
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="suppliers-screen">
+                            <i class="bi bi-box-seam"></i> Поставщики
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="promotions-screen">
+                            <i class="bi bi-megaphone"></i> Акции
+                        </a>
+                    </li>
+                    <div class="text-muted small mt-4 mb-2 ps-3 fw-bold">СИСТЕМА</div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="users-screen">
+                            <i class="bi bi-people"></i> Пользователи
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="sales-screen">
+                            <i class="bi bi-clock-history"></i> История продаж
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="mt-auto pt-4 p-3 border-top border-secondary">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary rounded-circle p-2 me-2">
+                            <i class="bi bi-person-fill text-white"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold small" id="currentUserLogin">Admin</div>
+                            <div class="text-muted smaller">Администратор</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-md-9 col-lg-10 p-4">
+
+                <!-- Dashboard Screen (New Default) -->
+                <div id="dashboard-screen" class="app-screen">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold">Обзор магазина</h3>
+                        <button class="btn btn-primary btn-sm" onclick="loadDashboard()">
+                            <i class="bi bi-arrow-clockwise"></i> Обновить
+                        </button>
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <div class="glass-card">
+                                <div class="text-muted small mb-1">Продажи за сегодня</div>
+                                <div class="stat-value" id="statTodaySales">0 ₽</div>
+                                <div class="text-success small mt-2">
+                                    <i class="bi bi-graph-up-arrow"></i> +12% к вчерашнему
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="glass-card">
+                                <div class="text-muted small mb-1">Товаров в наличии</div>
+                                <div class="stat-value" id="statTotalStock">0 шт.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="glass-card">
+                                <div class="text-muted small mb-1">Чеков сегодня</div>
+                                <div class="stat-value" id="statTodayCount">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <h5 class="fw-bold mb-4">Последние продажи</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Время</th>
+                                        <th>Сумма</th>
+                                        <th>Кассир</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboardRecentSales">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Existing Screens Re-styled (Fragments) -->
+                <div id="pos-screen" class="app-screen d-none">
+                    <h3 class="fw-bold mb-4">Кассовый терминал</h3>
+                    <div class="row g-4 overflow-hidden" style="height: calc(100vh - 120px);">
+                        <div class="col-md-8">
+                            <div class="glass-card h-100 p-0 overflow-hidden d-flex flex-column">
+                                <div class="p-3 border-bottom border-secondary d-flex gap-2">
+                                    <select class="form-select w-auto" id="posPriceListSelect">
+                                        <option value="">Выберите прайс-лист...</option>
+                                    </select>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-transparent border-secondary"><i
+                                                class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control border-secondary" id="posSearchInput"
+                                            placeholder="Поиск товара...">
+                                    </div>
+                                </div>
+                                <div class="table-responsive flex-grow-1">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="sticky-top bg-dark">
+                                            <tr>
+                                                <th class="ps-3">Название</th>
+                                                <th>Остаток</th>
+                                                <th class="text-end pe-3">Действие</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="posProductsList"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="glass-card h-100 d-flex flex-column">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-cart3"></i> Текущий чек</h5>
+                                <div class="flex-grow-1 overflow-auto">
+                                    <table class="table table-sm">
+                                        <tbody id="cartList"></tbody>
+                                    </table>
+                                </div>
+                                <div class="pt-3 border-top border-secondary">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted small">Промежуточный итог:</span>
+                                        <span class="text-muted small"><span id="cartSubtotal">0</span> ₽</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label smaller text-muted mb-1">Применить акцию:</label>
+                                        <select class="form-select form-select-sm" id="posPromotionSelect">
+                                            <option value="">Без акции</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="fw-bold fs-5">Итого:</span>
+                                        <span class="fw-bold fs-5 text-primary"><span id="cartTotal">0</span> ₽</span>
+                                    </div>
+                                    <button class="btn btn-primary w-100 py-3 fw-bold" id="checkoutBtn">
+                                        ОПЛАТИТЬ ЧЕК
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="catalog-screen" class="app-screen d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold">Каталог товаров</h3>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                            <i class="bi bi-plus-lg"></i> Добавить товар
+                        </button>
+                    </div>
+                    <div class="glass-card">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Название</th>
+                                        <th>Автор</th>
+                                        <th>Артикул</th>
+                                        <th>Остаток</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="categories-screen" class="app-screen d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold">Группы товаров</h3>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                            <i class="bi bi-plus-lg"></i> Добавить категорию
+                        </button>
+                    </div>
+                    <div class="glass-card">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Название</th>
+                                        <th>Описание</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoriesList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pricelists-screen" class="app-screen d-none">
+                    <h3 class="fw-bold mb-4">Менеджер цен</h3>
+                    <div class="row g-4">
+                        <div class="col-md-5">
+                            <div class="glass-card">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="fw-bold mb-0">Прайс-листы</h5>
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#addPriceListModal">
+                                        <i class="bi bi-plus-lg"></i> Создать
+                                    </button>
+                                </div>
+                                <div class="table-responsive" style="max-height: 500px">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Дата</th>
+                                                <th>Категория</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="priceListsTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="glass-card">
+                                <h5 class="fw-bold mb-4">Цены товаров: #<span id="activePriceListId">-</span></h5>
+                                <form id="addPriceListItemForm" class="row g-2 mb-4">
+                                    <input type="hidden" name="id_price_list" id="currentPriceListIdInput">
+                                    <div class="col-6">
+                                        <select class="form-select" name="id_product" id="priceListProductSelect"
+                                            required></select>
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="number" class="form-control" name="price" placeholder="Цена"
+                                            required>
+                                    </div>
+                                    <div class="col-3">
+                                        <button type="submit" class="btn btn-primary w-100">Доб.</button>
+                                    </div>
+                                </form>
+                                <div class="table-responsive" style="max-height: 400px">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Товар</th>
+                                                <th>Цена</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="priceListItemsTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="suppliers-screen" class="app-screen d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold">Поставщики</h3>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+                            <i class="bi bi-plus-lg"></i> Добавить
+                        </button>
+                    </div>
+                    <div class="glass-card">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Название</th>
+                                        <th>ИНН</th>
+                                        <th>Телефон</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="suppliersList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="promotions-screen" class="app-screen d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold">Акции и скидки</h3>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPromotionModal">
+                            <i class="bi bi-megaphone"></i> Создать акцию
+                        </button>
+                    </div>
+                    <div class="glass-card">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Название</th>
+                                        <th>Скидка</th>
+                                        <th>Старт</th>
+                                        <th>Конец</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="promotionsList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="users-screen" class="app-screen d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold">Управление персоналом</h3>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="bi bi-person-plus"></i> Новый сотрудник
+                        </button>
+                    </div>
+                    <div class="glass-card">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Логин</th>
+                                        <th>Роль</th>
+                                        <th>Дата создания</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sales-screen" class="app-screen d-none">
+                    <h3 class="fw-bold mb-4">История продаж (Архив)</h3>
+                    <div class="glass-card">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Дата</th>
+                                        <th>Время</th>
+                                        <th>Сумма</th>
+                                        <th>Кассир</th>
+                                        <th>Действие</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="salesList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для товара -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-card p-0">
+                <form id="addProductForm">
+                    <input type="hidden" name="id" class="entity-id-input">
+                    <div class="modal-header border-secondary">
+                        <h5 class="modal-title fw-bold">Данные товара</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label text-muted small">Название</label>
+                                <input type="text" class="form-control" name="name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">Автор</label>
+                                <input type="text" class="form-control" name="author">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">Артикул</label>
+                                <input type="text" class="form-control" name="article" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">Категория</label>
+                                <select class="form-select" name="id_category" id="categorySelect" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">Поставщик</label>
+                                <select class="form-select" name="supplierId" id="supplierSelect" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">Остаток</label>
+                                <input type="number" class="form-control" name="stock_quantity" value="0">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-muted small">Описание</label>
+                                <textarea class="form-control" name="description" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-link text-muted" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для категории -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-card p-0">
+                <form id="addCategoryForm">
+                    <input type="hidden" name="id" class="entity-id-input">
+                    <div class="modal-header border-secondary">
+                        <h5 class="modal-title fw-bold">Группа товаров</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Название</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Родительская группа</label>
+                            <select class="form-select" name="base_goods_group" id="parentCategorySelect"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Описание</label>
+                            <textarea class="form-control" name="description"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="submit" class="btn btn-primary w-100">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для поставщика -->
+    <div class="modal fade" id="addSupplierModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-card p-0">
+                <form id="addSupplierForm">
+                    <input type="hidden" name="id" class="entity-id-input">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold">Данные поставщика</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3"><label class="form-label small text-muted">Название</label><input type="text"
+                                class="form-control" name="name" required></div>
+                        <div class="mb-3"><label class="form-label small text-muted">ИНН</label><input type="text"
+                                class="form-control" name="inn"></div>
+                        <div class="mb-3"><label class="form-label small text-muted">Телефон</label><input type="text"
+                                class="form-control" name="phone"></div>
+                        <div class="mb-3"><label class="form-label small text-muted">Адрес</label><input type="text"
+                                class="form-control" name="address"></div>
+                    </div>
+                    <div class="modal-footer"><button type="submit" class="btn btn-primary w-100">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для промоакции -->
+    <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-card p-0">
+                <form id="addPromotionForm">
+                    <input type="hidden" name="id" class="entity-id-input">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold">Новая акция</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3"><label class="form-label small text-muted">Заголовок</label><input type="text"
+                                class="form-control" name="title" required></div>
+                        <div class="mb-3"><label class="form-label small text-muted">Скидка (%)</label><input
+                                type="number" class="form-control" name="discount_percent" required></div>
+                        <div class="row">
+                            <div class="col-6"><label class="form-label small text-muted">Старт</label><input
+                                    type="date" class="form-control" name="start_date" required></div>
+                            <div class="col-6"><label class="form-label small text-muted">Конец</label><input
+                                    type="date" class="form-control" name="end_date" required></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer"><button type="submit" class="btn btn-primary w-100">Создать</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для пользователя -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-card p-0">
+                <form id="addUserForm">
+                    <input type="hidden" name="id" class="entity-id-input">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold">Профиль сотрудника</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3"><label class="form-label small text-muted">Логин</label><input type="text"
+                                class="form-control" name="login" required></div>
+                        <div class="mb-3"><label class="form-label small text-muted">Пароль</label><input
+                                type="password" class="form-control" name="password" required></div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Роль</label>
+                            <select class="form-select" name="role">
+                                <option value="cashier">Кассир</option>
+                                <option value="manager">Менеджер</option>
+                                <option value="admin">Администратор</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer"><button type="submit" class="btn btn-primary w-100">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для прайса -->
+    <div class="modal fade" id="addPriceListModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-card p-0">
+                <form id="addPriceListForm">
+                    <input type="hidden" name="id" class="entity-id-input">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold">Новый прайс-лист</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3"><label class="form-label small text-muted">Дата вступления</label><input
+                                type="date" class="form-control" name="effective_date" required></div>
+                        <div class="mb-3"><label class="form-label small text-muted">Категория цен</label><input
+                                type="text" class="form-control" name="category" placeholder="например, Розничные">
+                        </div>
+                    </div>
+                    <div class="modal-footer"><button type="submit" class="btn btn-primary w-100">Создать</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js?v=pos-promo-1.2"></script>
+</body>
+
+</html>

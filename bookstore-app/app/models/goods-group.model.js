@@ -10,6 +10,5 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER
         }
     });
-    GoodsGroup.belongsTo(GoodsGroup, { foreignKey: "baseGoodsGroup" });
     return GoodsGroup;
 };

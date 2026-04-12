@@ -78,6 +78,9 @@ module.exports = app => {
      *         description: Ошибка сервера
      */
     router.get("/", promotions.findAll);
+    router.get("/:id", promotions.findOne);
+    router.put("/:id", promotions.update);
+    router.delete("/:id", promotions.delete);
 
     app.use('/api/promotions', router);
 };

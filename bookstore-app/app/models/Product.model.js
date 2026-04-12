@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         product_type: {
-            type: Sequelize.ENUM('book', 'stationery'),
+            type: Sequelize.ENUM('книга', 'канцтовары'),
             allowNull: false
         },
         author: {

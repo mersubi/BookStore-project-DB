@@ -4,21 +4,26 @@ const Op = db.Sequelize.Op;
 const { QueryTypes } = db.Sequelize;
 
 exports.create = (req, res) => {
-    if (!req.body.name || !req.body.article || !req.body.id_category) {
-        res.status(400).send({ message: "Обязательные поля: name, article, id_category!" });
+    // В форме используется articul, в модели article. Поддержим оба варианта.
+    const articleValue = req.body.articul || req.body.article;
+
+    if (!req.body.name || !articleValue || !req.body.id_category) {
+        res.status(400).send({ message: "Обязательные поля: name, articul/article, id_category!" });
         return;
     }
 
     const product = {
         name: req.body.name,
-        article: req.body.article,
-        product_type: req.body.product_type || 'book',
+        article: articleValue,
+        product_type: req.body.product_type || 'книга',
         author: req.body.author,
         publisher: req.body.publisher,
         isbn: req.body.isbn,
         id_category: req.body.id_category,
         description: req.body.description,
-        stock_quantity: req.body.stock_quantity || 0
+        stock_quantity: req.body.stock_quantity || 0,
+        supplierId: req.body.supplierId || null,
+        promotionId: req.body.promotionId || null
     };
 
     Product.create(product)

@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("users", {
         login: {
@@ -13,7 +15,27 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.ENUM('admin', 'cashier', 'manager'),
             defaultValue: 'cashier'
         }
+    }, {
+        hooks: {
+            beforeCreate: async (user) => {
+                if (user.password) {
+                    const salt = await bcrypt.genSalt(10);
+                    user.password = await bcrypt.hash(user.password, salt);
+                }
+            },
+            beforeUpdate: async (user) => {
+                if (user.changed('password')) {
+                    const salt = await bcrypt.genSalt(10);
+                    user.password = await bcrypt.hash(user.password, salt);
+                }
+            }
+        }
     });
+
+    // Метод для проверки пароля
+    User.prototype.validPassword = async function(password) {
+        return await bcrypt.compare(password, this.password);
+    };
 
     return User;
 };
