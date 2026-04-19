@@ -63,6 +63,12 @@ body {
     background: var(--card-bg);
     backdrop-filter: blur(8px);
     border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
 /* --- Print Styles --- */
 @media print {
     body * { visibility: hidden; }
@@ -75,11 +81,6 @@ body {
         display: block !important;
         visibility: visible !important;
     }
-}
-    border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .glass-card:hover {
