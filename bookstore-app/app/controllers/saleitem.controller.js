@@ -7,7 +7,7 @@ exports.create = (req, res) => {
         res.status(400).send({ message: "Обязательные поля: id_sale, id_product, quantity, sale_price!" });
         return;
     }
-
+    //Сохранение деталей продажи (чек)
     const saleItem = {
         id_sale: req.body.id_sale,
         id_product: req.body.id_product,

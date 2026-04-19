@@ -16,7 +16,7 @@ exports.create = async (req, res) => {
                 total_amount: req.body.total_amount,
                 userId: req.body.userId || null
             };
-
+            // 1. Создание основной записи продажи
             const newSale = await Sale.create(saleParams, { transaction: t });
 
             for (const item of req.body.items) {
@@ -25,11 +25,11 @@ exports.create = async (req, res) => {
                 if (!product) {
                     throw new Error(`Товар с id=${item.id_product} не найден.`);
                 }
-
+                // 2. Проверка остатка
                 if (product.stock_quantity < item.quantity) {
                     throw new Error(`Недостаточно товара на складе для: ${product.name}`);
                 }
-
+                // 3. Списание остатков
                 product.stock_quantity -= item.quantity;
                 await product.save({ transaction: t });
 
@@ -40,7 +40,7 @@ exports.create = async (req, res) => {
                     sale_price: item.sale_price
                 }, { transaction: t });
             }
-            
+
             res.send(newSale);
         });
     } catch (err) {
@@ -69,6 +69,7 @@ exports.findOne = (req, res) => {
             "user",
             {
                 model: db.saleItem,
+                as: 'saleItems',
                 include: ["product"]
             }
         ]

@@ -27,11 +27,17 @@ body {
     background: var(--sidebar-bg);
     backdrop-filter: blur(12px);
     border-right: 1px solid var(--glass-border);
-    height: 100vh;
-    position: sticky;
-    top: 0;
     padding: 1.5rem;
     transition: width 0.3s ease;
+}
+
+/* Применяем жесткую высоту и позицию только на планшетах и ПК */
+@media (min-width: 768px) {
+    .sidebar {
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
 }
 
 .nav-link {

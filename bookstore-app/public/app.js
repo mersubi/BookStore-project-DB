@@ -93,6 +93,15 @@ function initNavigation() {
             const targetScreen = document.getElementById(targetId);
             if (targetScreen) targetScreen.classList.remove('d-none');
 
+            // На мобильных скрываем боковое меню после клика
+            if (window.innerWidth < 768) {
+                const offcanvasMenu = document.getElementById('sidebarMenu');
+                if (offcanvasMenu) {
+                    const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasMenu);
+                    if (bsOffcanvas) bsOffcanvas.hide();
+                }
+            }
+
             switch(targetId) {
                 case 'dashboard-screen': loadDashboard(); break;
                 case 'pos-screen': loadPosProducts(); loadPosPriceLists(); break;
@@ -218,6 +227,9 @@ function initGlobalListeners() {
 
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('role');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('username');
         location.reload();
     });
 
@@ -278,6 +290,10 @@ function initFormHandlers() {
                 const result = await res.json();
                 currentUser = result.user;
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                // Сохраняем роль отдельным ключом для RBAC отчётов
+                localStorage.setItem('role', currentUser.role);
+                localStorage.setItem('userId', currentUser.id);
+                localStorage.setItem('username', currentUser.login);
                 showToast('Добро пожаловать, ' + currentUser.login, 'success');
                 closeModal('loginModal');
                 checkAuth();
@@ -395,7 +411,7 @@ async function loadUsers() {
     if (!tbody) return;
     tbody.innerHTML = '';
     list.forEach(u => {
-        tbody.innerHTML += `<tr><td class="fw-bold">${u.login}</td><td><span class="badge bg-secondary">${u.role}</span></td><td>${new Date(u.createdAt).toLocaleDateString()}</td><td><button class="btn btn-sm btn-outline-info me-1" onclick="openEditModal('users', ${u.id})"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteEntity('users', ${u.id})"><i class="bi bi-trash"></i></button></td></tr>`;
+        tbody.innerHTML += `<tr><td class="text-muted small">${u.id}</td><td class="fw-bold">${u.login}</td><td><span class="badge bg-secondary">${u.role}</span></td><td>${new Date(u.createdAt).toLocaleDateString()}</td><td><button class="btn btn-sm btn-outline-info me-1" onclick="openEditModal('users', ${u.id})"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteEntity('users', ${u.id})"><i class="bi bi-trash"></i></button></td></tr>`;
     });
 }
 

@@ -16,10 +16,13 @@
     <div class="container-fluid p-0">
         <div class="row g-0 min-vh-100">
             <!-- Modern Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar">
-                <div class="d-flex align-items-center mb-4 px-3">
-                    <i class="bi bi-book-half fs-3 text-primary me-2"></i>
-                    <h5 class="mb-0 fw-bold">BookStore</h5>
+            <div class="col-md-3 col-lg-2 sidebar offcanvas-md offcanvas-start d-flex flex-column" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+                <div class="d-flex align-items-center mb-4 px-3 justify-content-between mt-3 mt-md-0">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-book-half fs-3 text-primary me-2"></i>
+                        <h5 class="mb-0 fw-bold" id="sidebarMenuLabel">BookStore</h5>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white d-md-none" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
                 </div>
 
                 <ul class="nav flex-column">
@@ -70,6 +73,11 @@
                             <i class="bi bi-clock-history"></i> История продаж
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-target="reports-screen" id="reports-nav-link">
+                            <i class="bi bi-bar-chart-line"></i> Отчёты
+                        </a>
+                    </li>
                 </ul>
 
                 <div class="mt-auto pt-4 p-3 border-top border-secondary">
@@ -90,6 +98,17 @@
 
             <!-- Main Content Area -->
             <div class="col-md-9 col-lg-10 p-4">
+            
+                <!-- Mobile Header (Visible only on small screens) -->
+                <div class="d-md-none d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-book-half fs-3 text-primary me-2"></i>
+                        <h5 class="mb-0 fw-bold">BookStore</h5>
+                    </div>
+                    <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                </div>
 
                 <!-- Dashboard Screen (New Default) -->
                 <div id="dashboard-screen" class="app-screen">
@@ -106,7 +125,6 @@
                                 <div class="text-muted small mb-1">Продажи за сегодня</div>
                                 <div class="stat-value" id="statTodaySales">0 ₽</div>
                                 <div class="text-success small mt-2">
-                                    <i class="bi bi-graph-up-arrow"></i> +12% к вчерашнему
                                 </div>
                             </div>
                         </div>
@@ -379,6 +397,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
+                                        <th>ID</th>
                                         <th>Логин</th>
                                         <th>Роль</th>
                                         <th>Дата создания</th>
@@ -411,6 +430,221 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ════════════════════════════════════════════════ -->
+                <!-- ЭКРАН ОТЧЁТОВ                                   -->
+                <!-- ════════════════════════════════════════════════ -->
+                <div id="reports-screen" class="app-screen d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold"><i class="bi bi-bar-chart-line me-2"></i>Отчёты</h3>
+                        <span class="badge bg-secondary" id="reports-role-badge">Роль: –</span>
+                    </div>
+
+                    <!-- ─── КАССИР ─── -->
+                    <div data-min-role="cashier" class="report-group mb-4">
+                        <div class="text-muted small fw-bold mb-3 ps-1"
+                            style="letter-spacing:.08em">КАССИР — ОПЕРАТИВНЫЕ ОТЧЁТЫ</div>
+                        <div class="row g-4">
+
+                            <!-- Отчёт 1: Итоги смены -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="glass-card h-100">
+                                    <h6 class="fw-bold mb-1"><i class="bi bi-calendar-check me-1 text-info"></i>Итоги смены</h6>
+                                    <p class="text-muted small mb-3">Выручка и количество чеков за выбранную дату</p>
+                                    <div class="mb-2">
+                                        <label class="form-label text-muted small mb-1">Дата</label>
+                                        <input type="date" class="form-control form-control-sm" id="r1-date">
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-info w-100" onclick="runReport1()">
+                                        <i class="bi bi-play-fill"></i> Сформировать
+                                    </button>
+                                    <div id="r1-result" class="mt-3 small"></div>
+                                </div>
+                            </div>
+
+                            <!-- Отчёт 2: Состав чека -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="glass-card h-100">
+                                    <h6 class="fw-bold mb-1"><i class="bi bi-receipt me-1 text-info"></i>Состав чека</h6>
+                                    <p class="text-muted small mb-3">Строки конкретной продажи по её ID</p>
+                                     <div class="mb-2">
+                                         <label class="form-label text-muted small mb-1">Продажа</label>
+                                         <select class="form-select form-select-sm" id="r2-saleId">
+                                             <option value="">— загрузка... —</option>
+                                         </select>
+                                     </div>
+                                    <button class="btn btn-sm btn-outline-info w-100" onclick="runReport2()">
+                                        <i class="bi bi-play-fill"></i> Сформировать
+                                    </button>
+                                    <div id="r2-result" class="mt-3 small"></div>
+                                </div>
+                            </div>
+
+                            <!-- Отчёт 3: По типу товара -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="glass-card h-100">
+                                    <h6 class="fw-bold mb-1"><i class="bi bi-tags me-1 text-info"></i>По типу товара</h6>
+                                    <p class="text-muted small mb-3">Агрегация продаж по типу за дату</p>
+                                    <div class="mb-2">
+                                        <label class="form-label text-muted small mb-1">Тип</label>
+                                        <select class="form-select form-select-sm" id="r3-type">
+                                            <option value="книга">Книги</option>
+                                            <option value="канцтовары">Канцтовары</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label text-muted small mb-1">Дата</label>
+                                        <input type="date" class="form-control form-control-sm" id="r3-date">
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-info w-100" onclick="runReport3()">
+                                        <i class="bi bi-play-fill"></i> Сформировать
+                                    </button>
+                                    <div id="r3-result" class="mt-3 small"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ─── МЕНЕДЖЕР ─── -->
+                    <div data-min-role="manager" class="report-group mb-4">
+                        <div class="text-muted small fw-bold mb-3 ps-1"
+                            style="letter-spacing:.08em">МЕНЕДЖЕР — АНАЛИТИЧЕСКИЕ ОТЧЁТЫ</div>
+                        <div class="row g-4">
+
+                            <!-- Отчёт 4: Топ в категории -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="glass-card h-100">
+                                    <h6 class="fw-bold mb-1"><i class="bi bi-trophy me-1 text-warning"></i>Топ в категории</h6>
+                                    <p class="text-muted small mb-3">10 самых продаваемых товаров категории</p>
+                                     <div class="mb-2">
+                                         <label class="form-label text-muted small mb-1">Категория</label>
+                                         <select class="form-select form-select-sm" id="r4-categoryId">
+                                             <option value="">— загрузка... —</option>
+                                         </select>
+                                     </div>
+                                    <button class="btn btn-sm btn-outline-warning w-100" onclick="runReport4()">
+                                        <i class="bi bi-play-fill"></i> Сформировать
+                                    </button>
+                                    <div id="r4-result" class="mt-3 small"></div>
+                                </div>
+                            </div>
+
+                            <!-- Отчёт 5: Неликвид -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="glass-card h-100">
+                                    <h6 class="fw-bold mb-1"><i class="bi bi-exclamation-triangle me-1 text-warning"></i>Товары без продаж</h6>
+                                    <p class="text-muted small mb-3">Неликвид — не продавался за период</p>
+                                    <div class="mb-2">
+                                        <label class="form-label text-muted small mb-1">С даты</label>
+                                        <input type="date" class="form-control form-control-sm" id="r5-start">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label text-muted small mb-1">По дату</label>
+                                        <input type="date" class="form-control form-control-sm" id="r5-end">
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-warning w-100" onclick="runReport5()">
+                                        <i class="bi bi-play-fill"></i> Сформировать
+                                    </button>
+                                    <div id="r5-result" class="mt-3 small"></div>
+                                </div>
+                            </div>
+
+                            <!-- Отчёт 6: По поставщику -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="glass-card h-100">
+                                    <h6 class="fw-bold mb-1"><i class="bi bi-box-seam me-1 text-warning"></i>По поставщику</h6>
+                                    <p class="text-muted small mb-3">Объём и выручка по поставщику за период</p>
+                                     <div class="mb-2">
+                                         <label class="form-label text-muted small mb-1">Поставщик</label>
+                                         <select class="form-select form-select-sm" id="r6-supplierId">
+                                             <option value="">— загрузка... —</option>
+                                         </select>
+                                     </div>
+                                    <div class="mb-2">
+                                        <label class="form-label text-muted small mb-1">С даты</label>
+                                        <input type="date" class="form-control form-control-sm" id="r6-start">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label text-muted small mb-1">По дату</label>
+                                        <input type="date" class="form-control form-control-sm" id="r6-end">
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-warning w-100" onclick="runReport6()">
+                                        <i class="bi bi-play-fill"></i> Сформировать
+                                    </button>
+                                    <div id="r6-result" class="mt-3 small"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ─── АДМИНИСТРАТОР ─── -->
+                    <div data-min-role="admin" class="report-group mb-4">
+                        <div class="text-muted small fw-bold mb-3 ps-1"
+                            style="letter-spacing:.08em">АДМИНИСТРАТОР — УПРАВЛЕНЧЕСКИЕ ОТЧЁТЫ</div>
+                        <div class="row g-4">
+
+                            <!-- Отчёт 7: Финансовый -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="glass-card h-100">
+                                    <h6 class="fw-bold mb-1"><i class="bi bi-cash-stack me-1 text-danger"></i>Финансовый отчёт</h6>
+                                    <p class="text-muted small mb-3">Выручка по дням за период (SUM/AVG/MAX)</p>
+                                    <div class="mb-2">
+                                        <label class="form-label text-muted small mb-1">С даты</label>
+                                        <input type="date" class="form-control form-control-sm" id="r7-start">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label text-muted small mb-1">По дату</label>
+                                        <input type="date" class="form-control form-control-sm" id="r7-end">
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger w-100" onclick="runReport7()">
+                                        <i class="bi bi-play-fill"></i> Сформировать
+                                    </button>
+                                    <div id="r7-result" class="mt-3 small"></div>
+                                </div>
+                            </div>
+
+                            <!-- Отчёт 8: Эффективность кассира -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="glass-card h-100">
+                                    <h6 class="fw-bold mb-1"><i class="bi bi-person-check me-1 text-danger"></i>Эффективность кассира</h6>
+                                    <p class="text-muted small mb-3">Метрики продаж конкретного кассира</p>
+                                     <div class="mb-2">
+                                         <label class="form-label text-muted small mb-1">Кассир</label>
+                                         <select class="form-select form-select-sm" id="r8-userId">
+                                             <option value="">— загрузка... —</option>
+                                         </select>
+                                     </div>
+                                    <button class="btn btn-sm btn-outline-danger w-100" onclick="runReport8()">
+                                        <i class="bi bi-play-fill"></i> Сформировать
+                                    </button>
+                                    <div id="r8-result" class="mt-3 small"></div>
+                                </div>
+                            </div>
+
+                            <!-- Отчёт 9: Статистика по акции -->
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="glass-card h-100">
+                                    <h6 class="fw-bold mb-1"><i class="bi bi-megaphone me-1 text-danger"></i>Статистика по акции</h6>
+                                    <p class="text-muted small mb-3">Сколько товаров вошло в акцию и сколько продано</p>
+                                     <div class="mb-2">
+                                         <label class="form-label text-muted small mb-1">Акция</label>
+                                         <select class="form-select form-select-sm" id="r9-promoId">
+                                             <option value="">— загрузка... —</option>
+                                         </select>
+                                     </div>
+                                    <button class="btn btn-sm btn-outline-danger w-100" onclick="runReport9()">
+                                        <i class="bi bi-play-fill"></i> Сформировать
+                                    </button>
+                                    <div id="r9-result" class="mt-3 small"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div><!-- /reports-screen -->
 
             </div>
         </div>
@@ -629,7 +863,8 @@
                         </thead>
                         <tbody id="detailSaleItems"></tbody>
                     </table>
-                    <div class="pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
+                    <div
+                        class="pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
                         <span class="fw-bold">ИТОГО К ОПЛАТЕ:</span>
                         <span class="fw-bold fs-4 text-primary"><span id="detailSaleTotal">0</span> ₽</span>
                     </div>
@@ -654,10 +889,12 @@
             <div>ДАТА: <span id="printDate"></span></div>
             <div>ПОЛЬЗОВАТЕЛЬ: <span id="printUser"></span></div>
         </div>
-        <table style="width: 100%; font-size: 11px; font-family: monospace; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
+        <table
+            style="width: 100%; font-size: 11px; font-family: monospace; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
             <tbody id="printItems"></tbody>
         </table>
-        <div style="display: flex; justify-content: space-between; font-weight: bold; font-family: monospace; font-size: 14px;">
+        <div
+            style="display: flex; justify-content: space-between; font-weight: bold; font-family: monospace; font-size: 14px;">
             <span>ИТОГО:</span>
             <span><span id="printTotal">0</span>.00 ₽</span>
         </div>
@@ -667,7 +904,8 @@
     </div>
 
     <!-- Модальное окно авторизации -->
-    <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content glass-card p-0 border-primary">
                 <form id="loginForm">
@@ -677,11 +915,13 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label text-muted small">Логин</label>
-                            <input type="text" class="form-control" name="login" placeholder="Введите логин..." required>
+                            <input type="text" class="form-control" name="login" placeholder="Введите логин..."
+                                required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label text-muted small">Пароль</label>
-                            <input type="password" class="form-control" name="password" placeholder="Введите пароль..." required>
+                            <input type="password" class="form-control" name="password" placeholder="Введите пароль..."
+                                required>
                         </div>
                     </div>
                     <div class="modal-footer border-secondary border-opacity-25">
@@ -694,6 +934,7 @@
 
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="app.js?v=pos-promo-1.2"></script>
+    <script src="reports.js"></script>
 </body>
 
 </html>

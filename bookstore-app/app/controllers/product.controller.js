@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 const { QueryTypes } = db.Sequelize;
 
 exports.create = (req, res) => {
-    // В форме используется articul, в модели article. Поддержим оба варианта.
+    // в форме используется articul, в модели article
     const articleValue = req.body.articul || req.body.article;
 
     if (!req.body.name || !articleValue || !req.body.id_category) {

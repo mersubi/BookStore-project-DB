@@ -31,7 +31,7 @@ module.exports = (db) => {
     });
 
     // SaleItem -> Sale
-    db.sale.hasMany(db.saleItem, { foreignKey: 'id_sale', as: 'saleitems' });
+    db.sale.hasMany(db.saleItem, { foreignKey: 'id_sale', as: 'saleItems' });
     db.saleItem.belongsTo(db.sale, {
         foreignKey: 'id_sale'
     });

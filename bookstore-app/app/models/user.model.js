@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.ENUM('admin', 'cashier', 'manager'),
             defaultValue: 'cashier'
         }
-    }, {
+    }, { //Автоматическое хеширование пароля
         hooks: {
             beforeCreate: async (user) => {
                 if (user.password) {
@@ -33,7 +33,7 @@ module.exports = (sequelize, Sequelize) => {
     });
 
     // Метод для проверки пароля
-    User.prototype.validPassword = async function(password) {
+    User.prototype.validPassword = async function (password) {
         return await bcrypt.compare(password, this.password);
     };
 
