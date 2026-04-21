@@ -8,9 +8,11 @@ const app = express();
 app.use(express.static('public'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 
+// Настройка разрешенных источников для доступа к API
 var corsOptions = {
-    origin: "http://localhost:8081"
+    origin: ["http://localhost:8080", "http://localhost:6868"]
 };
+// Подключение middleware CORS к конвейеру Express
 app.use(cors(corsOptions));
 // parse requests of content-type - application/json
 app.use(express.json());

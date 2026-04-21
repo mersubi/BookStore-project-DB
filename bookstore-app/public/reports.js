@@ -37,7 +37,7 @@
 function roleHasAccess(userRole, requiredRole) {
     // Порядок: чем меньше индекс — тем больше прав
     const hierarchy = ['admin', 'manager', 'cashier'];
-    const userLevel     = hierarchy.indexOf(userRole);
+    const userLevel = hierarchy.indexOf(userRole);
     const requiredLevel = hierarchy.indexOf(requiredRole);
 
     // Если роль неизвестна — запрещаем
@@ -63,7 +63,7 @@ function applyReportVisibility() {
         badge.textContent = `Роль: ${labels[role] || role}`;
         // Цвет бейджа по роли
         badge.className = 'badge ' + ({
-            admin:   'bg-danger',
+            admin: 'bg-danger',
             manager: 'bg-warning text-dark',
             cashier: 'bg-info text-dark'
         }[role] || 'bg-secondary');
@@ -193,6 +193,7 @@ async function loadReportDropdowns() {
  * Автоматически добавляет заголовок user-role из localStorage
  */
 async function fetchReport(endpoint, params = {}) {
+    // Формирование URL с параметрами
     const url = new URL(`/api/reports/${endpoint}`, window.location.origin);
     Object.entries(params).forEach(([k, v]) => {
         if (v !== '' && v !== null && v !== undefined) {
@@ -277,7 +278,7 @@ async function runReport2() {
 
 async function runReport3() {
     const productType = document.getElementById('r3-type').value;
-    const targetDate  = document.getElementById('r3-date').value;
+    const targetDate = document.getElementById('r3-date').value;
     if (!targetDate) return renderError('r3-result', 'Укажите дату');
     try {
         renderResult('r3-result', await fetchReport('by-product-type', { productType, targetDate }));
@@ -301,7 +302,7 @@ async function runReport4() {
 
 async function runReport5() {
     const startDate = document.getElementById('r5-start').value;
-    const endDate   = document.getElementById('r5-end').value;
+    const endDate = document.getElementById('r5-end').value;
     if (!startDate || !endDate) return renderError('r5-result', 'Укажите период');
     try {
         renderResult('r5-result', await fetchReport('no-sales', { startDate, endDate }));
@@ -310,8 +311,8 @@ async function runReport5() {
 
 async function runReport6() {
     const supplierId = document.getElementById('r6-supplierId').value;
-    const startDate  = document.getElementById('r6-start').value;
-    const endDate    = document.getElementById('r6-end').value;
+    const startDate = document.getElementById('r6-start').value;
+    const endDate = document.getElementById('r6-end').value;
     if (!supplierId || !startDate || !endDate) return renderError('r6-result', 'Выберите поставщика и укажите период');
     try {
         renderResult('r6-result', await fetchReport('by-supplier', { supplierId, startDate, endDate }));
@@ -327,7 +328,7 @@ async function runReport6() {
 
 async function runReport7() {
     const startDate = document.getElementById('r7-start').value;
-    const endDate   = document.getElementById('r7-end').value;
+    const endDate = document.getElementById('r7-end').value;
     if (!startDate || !endDate) return renderError('r7-result', 'Укажите период');
     try {
         renderResult('r7-result', await fetchReport('financial', { startDate, endDate }));
